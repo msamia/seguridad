@@ -1,0 +1,7 @@
+@startuml
+package "servicio-consultas" {
+  [SwaggerUI] ..> [Controllers]
+  [Kafka listeners] --> [Projection repositories]
+  [Controllers] --> [Projection repositories]
+}
+@enduml

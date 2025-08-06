@@ -1,0 +1,11 @@
+@startuml
+actor Client
+Client -> ContratoController : PUT /api/contratos/{id}
+ContratoController -> ContratoService : actualizar(id,dto)
+ContratoService -> EmpleadoClient : getById
+EmpleadoClient --> ContratoService : EmpleadoRegistryDto
+ContratoService -> ContratoLaboralRepository : guardar(entidad)
+ContratoLaboralRepository --> ContratoService : entidad
+ContratoService --> ContratoController : dto
+ContratoController --> Client : 200 OK
+@enduml

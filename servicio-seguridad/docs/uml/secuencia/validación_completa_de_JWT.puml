@@ -1,0 +1,53 @@
+@startuml
+title Diagrama de Secuencia: Validación completa de JWT en Servidor de Recursos
+
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  participant Filter             as "Filtro de Seguridad"
+  participant JWTResource       as "Recurso JWT"
+  participant TimestampValidator as "JwtTimestampValidator"
+  box "Validadores de JWT"
+    participant IssuerValidator  as "JwtIssuerValidator"
+    participant ClaimValidator   as "JwtClaimValidator"
+  end box
+end box
+
+' Paso 1: Obtención del token
+Postman -> Keycloak                : Solicitar token
+Keycloak --> Postman               : token JWT
+
+' Paso 2: Petición al recurso protegido
+Postman -> Filter                  : Solicitar recurso con token
+Filter -> JWTResource              : Enruta al recurso JWT
+
+' Paso 3: Validación de timestamps
+JWTResource -> TimestampValidator  : Validar timestamps (exp, nbf, iat)
+note right of TimestampValidator
+  · exp: expiración debe ser futura
+  · nbf: no antes de esta fecha
+  · iat: fecha de emisión coherente
+end note
+TimestampValidator --> JWTResource : Timestamps válidos
+
+' Paso 4: Validación de issuer
+JWTResource -> IssuerValidator     : Validar issuer (iss)
+note right of IssuerValidator
+  Comprueba que el emisor (iss) coincida con el esperado
+end note
+IssuerValidator --> JWTResource    : Issuer válido
+
+' Paso 5: Validación de claims personalizados
+JWTResource -> ClaimValidator      : Validar claims (roles, scopes, jti)
+note right of ClaimValidator
+  · jti: previene replay attacks
+  · roles: permisos de acceso
+  · otros: claims de aplicación
+end note
+ClaimValidator --> JWTResource      : Claims válidos
+
+' Paso 6: Respuesta al cliente
+JWTResource --> Filter             : Respuesta de recurso
+Filter --> Postman                  : Respuesta de recurso
+@enduml

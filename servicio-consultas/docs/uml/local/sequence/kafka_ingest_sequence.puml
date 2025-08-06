@@ -1,0 +1,6 @@
+@startuml
+actor Kafka
+Kafka -> ContratoEventListener : contrato.created
+ContratoEventListener -> ContratoProjectionRepository : guardar
+ContratoProjectionRepository --> ContratoEventListener : ok
+@enduml

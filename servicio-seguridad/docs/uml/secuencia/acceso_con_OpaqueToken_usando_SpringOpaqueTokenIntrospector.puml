@@ -1,0 +1,37 @@
+@startuml
+' Diagrama de Secuencia: Acceso con OpaqueToken usando SpringOpaqueTokenIntrospector
+title Diagrama de Secuencia: Acceso con OpaqueToken usando SpringOpaqueTokenIntrospector
+
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  box "Filtro de Seguridad"
+    participant Introspector as "SpringOpaqueTokenIntrospector"
+    participant Resource      as "Recurso OAuth2"
+  end box
+end box
+
+' Paso 1: Obtención del token desde Keycloak
+Postman -> Keycloak               : Solicitar token
+Keycloak --> Postman              : token
+
+' Paso 2: Petición al recurso protegido
+Postman -> "Filtro de Seguridad"  : Solicitar recurso con token
+
+' Paso 3: Introspección del OpaqueToken
+"Filtro de Seguridad" -> Introspector : Enruta a Introspector
+Introspector -> Keycloak           : Autenticar (introspección)
+Keycloak --> Introspector          : Autenticado
+Introspector -> Resource          : Token válido, enruta al recurso
+
+note right of Introspector
+  • SpringOpaqueTokenIntrospector envía el token a Keycloak para introspección.
+  • Recibe principal y authorities para construir el SecurityContext.
+  • No se validan claims localmente: depende de la respuesta de Keycloak.
+end note
+
+' Paso 4: Devolución de la respuesta al cliente
+Resource --> "Filtro de Seguridad" : Respuesta de recurso
+"Filtro de Seguridad" --> Postman    : Respuesta de recurso
+@enduml

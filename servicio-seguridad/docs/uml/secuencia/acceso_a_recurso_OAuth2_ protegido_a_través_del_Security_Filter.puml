@@ -1,0 +1,21 @@
+@startuml
+title Diagrama de Secuencia: Acceso a recurso OAuth2 protegido a través del Filtro de Seguridad de la Aplicación Spring Boot 3
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  participant "Filtro de Seguridad" as Filter
+  participant "Recurso OAuth2"     as Resource
+end box
+
+Postman -> Keycloak     : Solicitar token
+Keycloak --> Postman    : token
+
+Postman -> Filter       : Solicitar recurso con token
+Filter  -> Resource     : Solicitar recurso con token
+Resource -> Keycloak    : Autenticar
+Keycloak --> Resource   : Autenticado
+Resource --> Filter     : Respuesta de recurso
+Filter  --> Postman     : Respuesta de recurso
+@enduml
+

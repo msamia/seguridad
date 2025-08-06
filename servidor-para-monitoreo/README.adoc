@@ -1,0 +1,37 @@
+= Servidor para Monitoreo
+
+Aplicación web basada en Spring Boot Admin que centraliza el estado y las métricas de los microservicios.
+Forma parte del proyecto de RRHH. Para más detalles generales consultá `../README.adoc`.
+
+== Endpoints principales
+
+La consola de administración estará disponible en `http://localhost:9090`. Desde allí
+podrás revisar health checks, métricas, logs y trazas de cada servicio registrado.
+
+== Comentarios
+
+Este servidor se registra en Eureka y los demás servicios utilizan el
+starter de cliente para reportar su estado automáticamente.
+
+Desde esta versión se deshabilitó la detección automática de instancias por
+Eureka para evitar registros duplicados en la consola de administración.
+
+Para que el tablero de monitoreo muestre el porcentaje de CPU, memoria y disco
+de cada microservicio es necesario exponer el endpoint de métricas y habilitar
+el binder de espacio en disco en todas las aplicaciones. Agregar las siguientes
+propiedades en cada `application.properties`:
+
+```
+management.endpoints.web.exposure.include=health,info,metrics
+management.metrics.binders.files.enabled=true
+```
+
+== Interfaz personalizada
+
+Además de la consola de administración de Spring Boot Admin, este módulo incluye un tablero liviano en `http://localhost:9090/dashboard/`.
+Ahora se muestran también el consumo de CPU, memoria y espacio en disco de cada servicio. Los valores se presentan mediante barras de progreso y gráficos simples que se actualizan de forma manual con el botón *Refrescar*. Chart.js se incluye localmente para no depender de Internet. Se añadió una página de ayuda accesible en `http://localhost:9090/dashboard/ayuda.html` que explica cómo interpretar cada dato del tablero. Además podés hacer clic en el nombre de un servicio para ver un resumen detallado en `detalle.html`.
+También se añadió `http://localhost:9090/dashboard/gestion.html` para iniciar o detener manualmente los servicios.
+
+== Detalles de implementación
+
+El código se ubica en `src/main/java` y registra la aplicación como cliente de Eureka para que los microservicios puedan reportar su estado. Se personalizan las vistas estáticas en `src/main/resources/static` y se aprovecha Spring Boot Admin para aplicar el patrón Tablero de Monitoreo. Las métricas se recogen por Actuator y se presentan en la consola web.

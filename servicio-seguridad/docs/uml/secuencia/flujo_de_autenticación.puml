@@ -1,0 +1,16 @@
+@startuml
+title Flujo de autenticación y acceso con Keycloak y Spring Boot 3
+
+participant Postman
+participant Keycloak
+participant "Aplicación Spring Boot 3" as App
+
+Postman -> Keycloak : Solicitar token
+Keycloak --> Postman : token
+
+Postman -> App : Solicitar recurso con token
+App --> Postman : Respuesta de recurso
+
+App -> Keycloak : Autenticar
+Keycloak --> App : Autenticado
+@enduml

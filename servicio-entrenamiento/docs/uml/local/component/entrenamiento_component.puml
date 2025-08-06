@@ -1,0 +1,9 @@
+@startuml
+package "servicio-entrenamiento" {
+  [SwaggerUI] ..> [Controllers]
+  [Controllers] --> [Services]
+  [Services] --> [Repositorios]
+  [Services] --> [EmpleadoClient]
+  [Services] --> [Kafka]
+}
+@enduml

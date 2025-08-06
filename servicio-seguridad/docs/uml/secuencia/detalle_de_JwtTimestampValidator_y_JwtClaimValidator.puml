@@ -1,0 +1,59 @@
+@startuml
+title Diagrama de Secuencia: Detalle de JwtTimestampValidator y JwtClaimValidator
+
+participant Postman
+participant Keycloak
+participant FS as "Filtro de Seguridad"
+participant JwtTimestampValidator as "JwtTimestampValidator"
+participant JwtClaimValidator as "JwtClaimValidator"
+participant Service as "Recurso Protegido"
+
+' --- Agrupamiento de validadores dentro del filtro de seguridad ---
+group SecurityFilter (Spring Boot 3)
+  group Validadores JWT
+    note right of JwtTimestampValidator
+      1. Obtiene tiempo actual en segundos y le resta 60s
+      2. Supone validez token = 30min → valida durante 31min
+      3. Lee claim "exp" del JWT
+      4. Compara (actual − 60s) < exp
+         • Si true  → token aún válido
+         • Si false → envía error a JwtClaimValidator
+    end note
+  end
+end
+
+' --- Flujo de validación de timestamp ---
+Postman -> Keycloak                 : Solicitar token
+Keycloak --> Postman                : token JWT
+Postman -> FS                       : Solicitar recurso con token
+FS -> JwtTimestampValidator         : Validar timestamp
+
+group Token válido en tiempo
+  JwtTimestampValidator --> FS      : OK tiempo
+end group
+
+group Token expirado
+  JwtTimestampValidator --> JwtClaimValidator : Error tiempo
+end group
+
+' --- Validación de issuer en JwtClaimValidator ---
+JwtClaimValidator -> JwtClaimValidator   : Leer propiedad issuer-uri en app
+JwtClaimValidator -> JwtClaimValidator   : Leer claim "iss" del JWT
+note right of JwtClaimValidator
+  • Compara issuer-uri esperado vs claim "iss"
+  • Si coinciden → token válido
+  • Si no → token inválido (issuer no válido)
+end note
+JwtClaimValidator --> FS           : Resultado validación issuer
+
+' --- Acceso o rechazo final ---
+group Token completamente válido
+  FS -> Service                  : Enruta al recurso protegido
+  Service --> FS                 : Respuesta de recurso
+  FS -> Postman                  : Devuelve respuesta al cliente
+end group
+
+group Token inválido
+  FS --> Postman                 : Respuesta de error (401)
+end group
+@enduml

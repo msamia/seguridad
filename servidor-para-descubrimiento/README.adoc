@@ -1,0 +1,27 @@
+= Servidor para Descubrimiento
+
+Servidor dedicado al registro y descubrimiento de los microservicios.
+
+Forma parte del proyecto de microservicios de RRHH. Consultá `../README.adoc` para obtener instrucciones generales.
+
+== Endpoints principales
+
+Eureka expone una interfaz web en `http://localhost:8761` desde donde se pueden
+ver las instancias registradas. No posee endpoints propios fuera de lo
+provisto por Spring.
+
+== Comentarios
+
+Los demás servicios se registran aquí para que el gateway pueda localizarlos. Los diagramas se encuentran en `docs/uml/local`.
+
+Desde esta versión el modo de *auto preservación* de Eureka está habilitado para evitar que se eliminen instancias de forma prematura si hay problemas de red. Si observás el mensaje `THE SELF PRESERVATION MODE IS TURNED OFF` en los logs, verificá que `eureka.server.enable-self-preservation=true` esté configurado en `application.properties`.
+
+== Documentación OpenAPI
+
+A pesar de no exponer controladores propios, este módulo publica `/v3/api-docs`
+y `/swagger-ui.html` de forma vacía para mantener uniformidad con el resto del
+proyecto.
+
+== Detalles de implementación
+
+El código se encuentra en `src/main/java` e inicia un servidor Eureka mediante la anotación `@EnableEurekaServer`. No posee lógica adicional y sólo expone la consola en `http://localhost:8761` para visualizar las instancias registradas. Esta pieza aplica el patrón Registro de Servicio.

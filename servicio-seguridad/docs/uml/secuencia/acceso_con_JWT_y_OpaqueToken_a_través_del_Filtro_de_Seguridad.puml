@@ -1,0 +1,30 @@
+@startuml
+' Título ajustado según el nuevo diagrama
+title Diagrama de Secuencia: Validación local de token en el Servidor de Recursos (sin introspección)
+
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  participant Filter   as "Filtro de Seguridad"
+  participant Resource as "Recurso OAuth2\n(JWT / OpaqueToken)"
+end box
+
+' 1) Obtención de token desde Keycloak
+Postman -> Keycloak             : Solicitar token
+Keycloak --> Postman            : token
+
+' 2) Petición al recurso protegido
+Postman -> Filter               : Solicitar recurso con token
+Filter  -> Resource             : Enruta al recurso OAuth2
+
+note right of Resource
+  El token se valida dentro
+  del servidor de recursos
+  (no se realiza introspección)
+end note
+
+' 3) Respuesta de recurso
+Resource --> Filter             : Respuesta de recurso
+Filter  --> Postman             : Respuesta de recurso
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+title Diagrama de Secuencia: OAuth2 encapsulado dentro de SecurityFilter
+
+participant Postman
+participant Keycloak
+participant FS as "Filtro de Seguridad"
+participant OAuth2Res as "Recurso OAuth2"
+participant JWTRes as "Recurso JWT"
+
+'--- Agrupación lógica usando grupos porque nested boxes no funcionan en secuencia ---
+group Aplicación Spring Boot 3
+  group SecurityFilter
+    group OAuth2 Resource
+      note right of OAuth2Res
+        • Este grupo representa el recurso OAuth2.
+        • Dentro de él, el Recurso JWT valida localmente:
+          - Firma (clave pública)
+          - Claims temporales (exp, nbf, iat)
+        • Construye el SecurityContext con roles y scopes.
+      end note
+    end
+  end
+end
+
+'--- Flujo de mensajes ---
+Postman -> Keycloak         : Solicitar token
+Keycloak --> Postman        : token JWT
+
+Postman -> FS               : Solicitar recurso con token
+FS -> OAuth2Res             : Enruta al recurso OAuth2
+OAuth2Res -> JWTRes         : Despacha al recurso JWT
+JWTRes --> OAuth2Res        : Respuesta de recurso
+OAuth2Res --> FS            : Retorna al filtro
+FS --> Postman              : Devuelve respuesta al cliente
+@enduml

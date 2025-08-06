@@ -1,0 +1,18 @@
+@startuml
+title Diagrama de Secuencia: Acceso a recurso protegido a través del Security Filter de Spring Boot 3
+
+participant Postman
+participant Keycloak
+box "Aplicación Spring Boot 3"
+  participant "Filtro de Seguridad" as Filter
+end box
+
+Postman -> Keycloak : Solicitar token
+Keycloak --> Postman : token
+
+Postman -> Filter : Solicitar recurso con token
+Filter -> Keycloak : Autenticar
+Keycloak --> Filter : Autenticado
+
+Filter --> Postman : Respuesta de recurso
+@enduml

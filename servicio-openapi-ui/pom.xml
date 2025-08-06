@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ar.org.hospitalcuencaalta</groupId>
+        <artifactId>seguridad</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>servicio-openapi-ui</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>servicio-openapi-ui</name>
+    <description>Interfaz para visualizar la documentación OpenAPI</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                    <execution>
+                        <id>root-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/root</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/root/rrhh_README.html</outputFile>
+                            <!-- No additional resources are required when
+                                 converting the root README. Removing the
+                                 resources section avoids a build failure when
+                                 the directory only contains the source
+                                 document. -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>api-gateway-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/API-gateway</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/API-gateway</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/API-gateway/API-gateway_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>comunes-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/comunes</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/comunes</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/comunes/comunes_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>contrato-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-contrato</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-contrato</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-contrato/servicio-contrato_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>empleado-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-empleado</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-empleado</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-empleado/servicio-empleado_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>entrenamiento-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-entrenamiento</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-entrenamiento</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-entrenamiento/servicio-entrenamiento_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>nomina-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-nomina</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-nomina</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-nomina/servicio-nomina_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>orquestador-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-orquestador</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-orquestador</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-orquestador/servicio-orquestador_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>consultas-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servicio-consultas</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-consultas</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-consultas/servicio-consultas_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>descubrimiento-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.parent.basedir}/servidor-para-descubrimiento</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servidor-para-descubrimiento</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servidor-para-descubrimiento/servidor-para-descubrimiento_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>openapi-readme</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/generated-docs/servicio-openapi-ui</outputDirectory>
+                            <outputFile>${project.build.directory}/generated-docs/servicio-openapi-ui/servicio-openapi-ui_README.html</outputFile>
+                            <!-- No extra resources required -->
+                            <!-- Removed deprecated 'sources' configuration -->
+                        </configuration>
+                    </execution>
+                    </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-generated-to-output</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}/static/html</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-docs</directory>
+                                            <includes>
+                                                <include>*/*.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-generated-to-src</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/src/main/resources/static/html</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-docs</directory>
+                                            <includes>
+                                                <include>*/*.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

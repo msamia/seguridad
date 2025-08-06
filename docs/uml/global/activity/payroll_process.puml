@@ -1,0 +1,8 @@
+@startuml
+start
+:servicio empleado envía evento;
+:servicio contrato crea contrato;
+:servicio nomina genera nómina;
+:servicio consultas actualiza proyecciones;
+stop
+@enduml

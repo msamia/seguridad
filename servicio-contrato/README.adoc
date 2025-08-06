@@ -1,0 +1,28 @@
+= Servicio Contrato
+
+Maneja la gestión de contratos de los empleados dentro del sistema.
+
+Forma parte del proyecto de microservicios de RRHH. Consultá `../README.adoc` para más detalles de construcción y ejecución.
+
+== Endpoints principales
+
+* `POST /api/contratos` - Crea un contrato laboral para un empleado.
+* `GET /api/contratos` - Lista todos los contratos registrados.
+* `PUT /api/contratos/{id}` - Actualiza un contrato existente.
+* `DELETE /api/contratos/{id}` - Elimina un contrato por id.
+* `DELETE /api/contratos/empleado/{empleadoId}` - Borra los contratos de un empleado.
+
+== Comentarios
+
+Este servicio mantiene un registro local de empleados mediante eventos de Kafka
+para validar integridad referencial. Los diagramas de apoyo se hallan en
+`docs/uml/local`.
+
+== Documentación OpenAPI
+
+La especificación de la API está disponible en `/v3/api-docs` y puede
+explorarse con Swagger UI en `/swagger-ui.html`.
+
+== Detalles de implementación
+
+El código está ubicado en `src/main/java`. Se dividen los controladores en el paquete `controlador`, los servicios de negocio en `servicio` y los repositorios JPA en `repositorio`. Se aplica el patrón Repositorio para el acceso a datos y se utilizan mapeadores de MapStruct ubicados en `web.mapeo`. Al crear o actualizar un contrato se valida la existencia del empleado en la tabla local `empleado_registry` y se publica un mensaje `ContratoEventDto` en Kafka. Esta integración adopta el patrón Event Driven y mantiene sincronizado a `servicio-consultas`.

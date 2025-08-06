@@ -1,0 +1,16 @@
+@startuml
+title Obtención de Token y Acceso a Recurso Protegido
+
+participant Cliente
+participant "Servidor de Autenticación" as Auth
+participant "Servidor de Recursos"   as Resource
+
+Cliente -> Auth      : Solicitar token
+Auth    --> Cliente  : token
+
+Cliente -> Resource  : Solicitar recurso con token
+Resource -> Auth     : Autenticar
+Auth    --> Resource : Autenticado
+
+Resource --> Cliente : Respuesta de recurso
+@enduml

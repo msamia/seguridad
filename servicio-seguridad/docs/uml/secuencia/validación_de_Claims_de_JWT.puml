@@ -1,0 +1,46 @@
+@startuml
+' Título adaptado al diagrama de claims de JWT
+title Diagrama de Secuencia: Validación de Claims de JWT (exp, iat, jti) en el Servidor de Recursos
+
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  participant Filter       as "Filtro de Seguridad"
+  participant JWTResource as "Recurso JWT"
+  participant Validator    as "JwtTimestampValidator"
+end box
+
+' Paso 1: Obtención del token con claims desde Keycloak
+Postman -> Keycloak       : Solicitar token
+Keycloak --> Postman      : token JWT (contiene exp, iat, jti, iss, aud, sub)
+
+' Paso 2: Petición al recurso protegido
+Postman -> Filter         : Solicitar recurso con token
+Filter -> JWTResource     : Enruta al recurso JWT
+
+' Paso 3: Validación de claims en JwtTimestampValidator
+JWTResource -> Validator  : Validar claims del token
+note right of Validator
+  JSON de ejemplo:
+  {
+    "exp": 1692019773,
+    "iat": 1692016173,
+    "jti": "63678565-...",
+    "iss": "http://127.0.0.1:8081/realms/dive-dev",
+    "aud": "account",
+    "sub": "7a43e119-..."
+  }
+
+  JwtTimestampValidator comprueba:
+  - exp: fecha de expiración debe ser > actualidad
+  - iat: fecha de emisión no posterior a la petición
+  - jti: identificador único para prevenir replay
+end note
+
+Validator --> JWTResource : Claims válidos
+
+' Paso 4: Respuesta al cliente
+JWTResource --> Filter     : Respuesta de recurso
+Filter --> Postman         : Respuesta de recurso
+@enduml

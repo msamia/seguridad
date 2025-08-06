@@ -1,0 +1,116 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="
+                     http://www.liquibase.org/xml/ns/dbchangelog
+                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2" author="msamia">
+        <!-- Tabla contratos -->
+        <createTable tableName="contratos">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tipo_contrato" type="VARCHAR(50)"/>
+            <column name="regimen" type="VARCHAR(50)"/>
+            <column name="fecha_desde" type="DATE"/>
+            <column name="fecha_hasta" type="DATE"/>
+            <!-- Ahora DOUBLE PRECISION en lugar de DECIMAL(19,2) -->
+            <column name="salario" type="DOUBLE PRECISION" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="empleado_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contratos"
+                                 baseColumnNames="empleado_id"
+                                 referencedTableName="empleado_registry"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_contrato_empleado"/>
+
+        <!-- Tabla jornadas -->
+        <createTable tableName="jornadas">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tipo_jornada" type="VARCHAR(50)"/>
+            <column name="horas_semanales" type="INT"/>
+            <column name="contrato_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="jornadas"
+                                 baseColumnNames="contrato_id"
+                                 referencedTableName="contratos"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_jornada_contrato"/>
+
+        <!-- Tabla turnos -->
+        <createTable tableName="turnos">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fecha" type="TIMESTAMP"/>
+            <column name="hora_inicio" type="TIMESTAMP"/>
+            <column name="hora_fin" type="TIMESTAMP"/>
+            <column name="tipo_turno" type="VARCHAR(50)"/>
+            <column name="jornada_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="turnos"
+                                 baseColumnNames="jornada_id"
+                                 referencedTableName="jornadas"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_turno_jornada"/>
+
+        <!-- Tabla asistencias -->
+        <createTable tableName="asistencias">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="marcacion_entrada" type="TIMESTAMP"/>
+            <column name="marcacion_salida" type="TIMESTAMP"/>
+            <column name="estado" type="VARCHAR(20)"/>
+            <column name="turno_id" type="BIGINT"/>
+            <column name="empleado_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="asistencias"
+                                 baseColumnNames="turno_id"
+                                 referencedTableName="turnos"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_asistencia_turno"/>
+        <addForeignKeyConstraint baseTableName="asistencias"
+                                 baseColumnNames="empleado_id"
+                                 referencedTableName="empleado_registry"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_asistencia_empleado"/>
+
+        <!-- Tabla licencias -->
+        <createTable tableName="licencias">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tipo" type="VARCHAR(50)"/>
+            <column name="fecha_desde" type="DATE"/>
+            <column name="fecha_hasta" type="DATE"/>
+            <column name="empleado_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="licencias"
+                                 baseColumnNames="empleado_id"
+                                 referencedTableName="empleado_registry"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_licencia_empleado"/>
+
+        <!-- Tabla vacaciones -->
+        <createTable tableName="vacaciones">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ejercicio" type="INT"/>
+            <column name="dias_otorgados" type="INT"/>
+            <column name="dias_tomados" type="INT"/>
+            <column name="empleado_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="vacaciones"
+                                 baseColumnNames="empleado_id"
+                                 referencedTableName="empleado_registry"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_vacacion_empleado"/>
+    </changeSet>
+</databaseChangeLog>

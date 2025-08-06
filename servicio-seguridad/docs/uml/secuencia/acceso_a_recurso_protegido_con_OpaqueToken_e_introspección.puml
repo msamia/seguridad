@@ -1,0 +1,36 @@
+@startuml
+' Diagrama para flujo con OpaqueToken e introspección
+title Diagrama de Secuencia: Acceso a recurso protegido con OpaqueToken e introspección
+
+participant Postman
+participant Keycloak
+
+box "Aplicación Spring Boot 3"
+  box "Filtro de Seguridad"
+    participant OpaqueToken    as OT
+    participant OAuth2Resource as "Recurso OAuth2"
+  end box
+end box
+
+' Paso 1: Obtención del token de Keycloak
+Postman -> Keycloak        : Solicitar token
+Keycloak --> Postman       : token
+
+' Paso 2: Petición al recurso protegido
+Postman -> "Filtro de Seguridad" : Solicitar recurso con token
+
+' Paso 3: Introspección en OpaqueToken
+"Filtro de Seguridad" -> OT           : Enruta al OpaqueToken
+OT -> Keycloak                       : Autenticar (introspección)
+Keycloak --> OT                      : Autenticado
+OT -> "Recurso OAuth2"             : Token válido, enruta al recurso
+
+note right of OT
+  • OT envía el token a Keycloak para verificar su validez.
+  • No se realiza validación local; depende de la respuesta de Keycloak.
+end note
+
+' Paso 4: Respuesta al cliente
+"Recurso OAuth2" --> "Filtro de Seguridad" : Respuesta de recurso
+"Filtro de Seguridad" --> Postman            : Respuesta de recurso
+@enduml

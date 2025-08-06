@@ -1,0 +1,52 @@
+= Servicio OpenAPI UI
+
+Interfaz web que centraliza la documentación OpenAPI de los microservicios mediante ReDoc.
+
+Forma parte del proyecto de microservicios de RRHH. Consultá `../README.adoc` para más detalles.
+
+== Uso
+
+Levantá el servicio y accedé a `http://localhost:8085`.
+Seleccioná el microservicio deseado en el menú desplegable para visualizar su documentación.
+Desde la barra de navegación también podés ir al tablero de monitoreo en `http://localhost:9090/dashboard/gestion.html`
+para iniciar o detener instancias, o abrir la consola de Eureka en `http://localhost:8761`.
+
+Todos los microservicios deben estar en ejecución para que sus especificaciones
+estén disponibles. De lo contrario, el visor mostrará un mensaje de error.
+
+== Documentación OpenAPI
+
+Este módulo no expone controladores propios. Obtiene las especificaciones a través del API Gateway
+usando rutas como `http://localhost:8080/<servicio>/v3/api-docs`, lo que permite resolver los
+destinos dinámicamente mediante Eureka y balanceo de carga.
+
+== Documentación AsciiDoc
+
+Además de las especificaciones OpenAPI, este servicio incluye las
+guías en AsciiDoc de cada módulo. Al seleccionar un servicio en la página
+principal, primero se muestran estos documentos y luego la
+documentación OpenAPI correspondiente. Los archivos `README.adoc`
+se convierten a HTML durante la compilación mediante el plugin
+Asciidoctor de Maven y se incluyen listos para su visualización.
+
+La generación de esta documentación puede omitirse para acelerar el
+proceso de compilación. Ejecutá el build con `-Pdocs` cuando necesites
+actualizar los HTML:
+
+[source,bash]
+----
+./mvnw clean package -Pdocs
+----
+
+== Despliegue detrás del API Gateway
+
+Si esta interfaz se publica en una ruta como `/servicio-openapi-ui` a través
+del API Gateway, los archivos HTML deben solicitarse mediante una ruta
+relativa. La función `loadDoc` de `index.html` usa `fetch('html/' + name)`
+para garantizar que la documentación se cargue tanto en modo independiente
+como detrás del Gateway. Si los documentos no se muestran, revisá que este
+detalle esté presente.
+
+== Detalles de implementación
+
+El código fuente está en `src/main/java` y actúa como un front controller que entrega los documentos generados con Asciidoctor. Se construye una lista de servicios consultando Eureka vía el API Gateway y se carga cada especificación con `fetch`. Esta solución sigue el patrón Presentación Separada, donde la lógica de documento se mantiene aislada del resto de los servicios.
