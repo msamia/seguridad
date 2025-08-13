@@ -11,20 +11,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-//    @Bean
-//    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-//        http.csrf(ServerHttpSecurity.CsrfSpec::disable);
-//        http.authorizeExchange(exchange -> exchange.anyExchange().authenticated());
-//        http.oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt);
-//        return http.build();
-//    }
-//
-//    @Bean
-//    public ReactiveJwtDecoder jwtDecoder() {
-//        return token -> Mono.error(new UnsupportedOperationException("No JWT decoder configured"));
-//    }
-
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.csrf(ServerHttpSecurity.CsrfSpec::disable);
